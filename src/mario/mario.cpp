@@ -73,7 +73,7 @@ namespace Mario
 			close( in_pfd[0] );     /* Close unused read end */
 			close( out_pfd[1] );    /* Close unused write end */
 
-			for( ; feed.valid(); ++feed ) {
+			for( feed.first() ; feed.valid(); ++feed ) {
 				string val( *feed );
 				write( in_pfd[1], val.c_str(), val.size() );
 				write( in_pfd[1], "\n", 1 );
@@ -129,7 +129,6 @@ namespace Mario
 
 
 	StringListFeed::StringListFeed()
-		: stringlist(), pos( stringlist.begin() )
 	{
 	}
 
@@ -141,6 +140,12 @@ namespace Mario
 	StringListFeed::push_back( const string& str )
 	{
 		stringlist.push_back( str );
+	}
+
+	void
+	StringListFeed::first()
+	{
+		pos = stringlist.begin();
 	}
 
 	bool

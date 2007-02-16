@@ -40,6 +40,12 @@ namespace iimms2
 	{
 	}
 
+	void
+	DictFeed::first()
+	{
+		return dictlist.first();
+	}
+
 	bool
 	DictFeed::valid() const
 	{

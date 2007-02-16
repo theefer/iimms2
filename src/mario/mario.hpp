@@ -71,6 +71,7 @@ namespace Mario
 		Feed();
 		virtual ~Feed();
 
+		virtual void first() = 0;
 		virtual bool valid() const = 0;
 		virtual std::string operator *() const = 0;
 		virtual void operator ++() = 0;
@@ -85,6 +86,7 @@ namespace Mario
 
 		void push_back( const std::string& str );
 
+		void first();
 		bool valid() const;
 		std::string operator *() const;
 		void operator ++();

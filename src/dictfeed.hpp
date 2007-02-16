@@ -36,6 +36,7 @@ namespace iimms2
 		DictFeed( const Xmms::List< Xmms::Dict >& dictlist, const std::string& key );
 		~DictFeed();
 
+		void first();
 		bool valid() const;
 		std::string operator *() const;
 		void operator ++();
