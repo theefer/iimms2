@@ -30,6 +30,7 @@ using std::string;
 #include "xmms2commands.hpp"
 
 using namespace iimms2;
+using namespace Mario;
 
 int
 main( int argc, char* argv[] )

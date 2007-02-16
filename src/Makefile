@@ -1,0 +1,22 @@
+# iimms2 - an XMMS2 client for wmii/dwm (using dmenu)
+# Copyright (C) 2007  Sébastien Cevey
+
+include ../config.mk
+
+SRC = iimms2.cpp dictfeed.cpp xmms2commands.cpp
+
+OBJ = ${SRC:.cpp=.o}
+
+all: iimms2
+	@echo built iimms2
+
+.cpp.o:
+	@echo CC $<
+	@${CXX} -c ${CXXFLAGS} $<
+
+iimms2: ${OBJ}
+	@echo LD $@
+	${CXX} -o $@ ${OBJ} ${LDFLAGS}
+
+clean:
+	rm -f iimms2 *.o
