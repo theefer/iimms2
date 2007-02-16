@@ -20,10 +20,15 @@ iimms2: libs ${OBJ}
 	@echo LD $@
 	${CXX} -o $@ ${OBJ} ${LDFLAGS}
 
-libs:
+libs: cmd_parser
 	@for l in ${LIBDIRS}; do \
 		(cd $$l; make) \
 	done
+
+cmd_parser:
+	@if [ ! -h cmd_parser ]; then \
+		(cd ..; ./pull-cmd_parser.sh) \
+	fi
 
 clean:
 	rm -f iimms2 *.o
