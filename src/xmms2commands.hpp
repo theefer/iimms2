@@ -37,7 +37,7 @@ namespace iimms2
 
 		Mario::FeedPtr choices( const std::string& input ) const;
 
-		Mario::FeedPtr makeCommandListFeed() const;
+		Mario::FeedPtr makeAlternativesFeed( const std::list< std::string >& alternatives ) const;
 		Mario::FeedPtr makeOptionsFeed( const std::string& input ) const;
 
 		void doTogglePlayPause() const;

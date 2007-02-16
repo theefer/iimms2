@@ -27,6 +27,11 @@ using std::list;
 using std::vector;
 using std::runtime_error;
 
+// DEBUG:
+#include <iostream>
+using std::cout;
+using std::endl;
+
 namespace Mario
 {
 
@@ -209,6 +214,9 @@ namespace Mario
 		string out;
 		list< string >::const_iterator it;
 		for( it = env.begin(); it != env.end(); ++it ) {
+			if( it != env.begin() ) {
+				out.append( " " );
+			}
 			out.append( *it );
 		}
 
@@ -249,10 +257,15 @@ namespace Mario
 			cmds.run( newCtx.render() );
 		}
 		catch( cmd_parser::command_not_found_error& e ) {
+			cout << "command not found: " << newCtx.render() << endl;
 			acquire( newCtx );
 		}
 		catch( cmd_parser::wrong_signature_error& e ) {
+			cout << "complete: " << newCtx.render() << endl;
 			acquire( newCtx );
+		}
+		catch( cmd_parser::incompatible_argument_error& e ) {
+			cout << "wrong arguments, stop" << endl;
 		}
 	}
 

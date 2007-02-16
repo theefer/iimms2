@@ -53,6 +53,9 @@ main( int argc, char* argv[] )
 	cout << "selected: " << title << endl;
 */
 
+	// FIXME: Read flags (version, help, etc)
+	// FIXME: flag to choose if output goes to stdout or dmenu (e.g. for status)
+
 	string input;
 	for( int i( 1 ); i < argc; ++i ) {
 		if( i > 1 ) input += " ";

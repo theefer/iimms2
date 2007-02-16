@@ -18,7 +18,7 @@ all: iimms2
 
 iimms2: libs ${OBJ}
 	@echo LD $@
-	${CXX} -o $@ ${OBJ} ${LDFLAGS}
+	@${CXX} -o $@ ${OBJ} ${LDFLAGS}
 
 libs: cmd_parser
 	@for l in ${LIBDIRS}; do \

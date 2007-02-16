@@ -93,36 +93,33 @@ namespace iimms2
 	{
 		FeedPtr ptr;
 
-		if( input.size() == 0 ) {
-			// No command given, list the possible commands
-			ptr = makeCommandListFeed();
-		}
-		else {
-			// Run interpreter to determine the completion
-			try {
-				run( input );
-			}
-			catch( command_not_found_error& e ) {
-				// Invalid command, give up now (do nothing)
-			}
-			catch( wrong_signature_error& e ) {
-				// Incomplete or wrong signature, try to complete
-				ptr = makeOptionsFeed( input );
+		try {
+			list< string > alter;
+			inter.complete( input, alter );
+			if( alter.size() > 0 ) {
+				ptr = makeAlternativesFeed( alter );
 			}
 		}
+		catch( cmd_parser::incompatible_argument_error& e ) {
+			// do nothing, no completion
+		}
+
 
 		return ptr;
 	}
 
 	FeedPtr
-	Xmms2Commands::makeCommandListFeed() const
+	Xmms2Commands::makeAlternativesFeed( const list< string >& alternatives ) const
 	{
 		StringListFeed* feed( new StringListFeed );
 
-		const list< command* >& cmdlist( inter.get_commands() );
-		list< command* >::const_iterator it;
-		for( it = cmdlist.begin(); it != cmdlist.end(); ++it ) {
-			feed->push_back( (*it)->get_name() );
+		string prev;
+		list< string >::const_iterator it;
+		for( it = alternatives.begin(); it != alternatives.end(); ++it ) {
+			if( (it->size() > 0) && (*it != prev) ) {
+				feed->push_back( *it );
+				prev = *it;
+			}
 		}
 
 		return FeedPtr( feed );
