@@ -43,9 +43,6 @@ namespace iimms2
 		inter.add_command("play/pause", "Toggle play/pause the playback.")
 			.add_signature<void>( "", boost::bind( &Xmms2Commands::doTogglePlayPause, this ) );
 
-		inter.add_command("clear", "Clear the active playlist.")
-			.add_signature<void>( "", boost::bind( &Xmms2Commands::doClear, this ) );
-
 		command& stopCmd( inter.add_command("stop", "Stop the playback.") );
 		stopCmd.add_signature<void>( "Stop the playback immediately.", boost::bind( &Xmms2Commands::doStopNow, this ) )
 			<< kw_argument::make( "now" );
@@ -66,14 +63,6 @@ namespace iimms2
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doJump, this, _1 ) )
 				<< Xmms2PlaylistItemArgument::make( client );
 
-		inter.add_command("seek", "Seek in the current song.")
-			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doSeek, this, _1 ) )
-				<< argument<string>::make( "offset" );
-
-		inter.add_command("load", "Load another playlist.")
-			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doLoad, this, _1 ) )
-				<< Xmms2PlaylistArgument::make( client );
-
 		inter.add_command("enqueue", "Enqueue songs in the active playlist.")
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doEnqueue, this, _1 ) )
 				<< argument<string>::make( "match" );
@@ -81,6 +70,17 @@ namespace iimms2
 		inter.add_command("insert", "Insert songs in the active playlist after the playing one.")
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doInsert, this, _1 ) )
 				<< argument<string>::make( "match" );
+
+		inter.add_command("seek", "Seek in the current song.")
+			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doSeek, this, _1 ) )
+				<< argument<string>::make( "offset" );
+
+		inter.add_command("clear", "Clear the active playlist.")
+			.add_signature<void>( "", boost::bind( &Xmms2Commands::doClear, this ) );
+
+		inter.add_command("load", "Load another playlist.")
+			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doLoad, this, _1 ) )
+				<< Xmms2PlaylistArgument::make( client );
 
 		inter.add_command("status", "Print status on standard output.")
 			.add_signature<void>( "", boost::bind( &Xmms2Commands::doStatus, this ) );
@@ -282,6 +282,5 @@ namespace iimms2
 	{
 		// FIXME: if not connected, display message, else display playing song
 	}
-
 
 }
