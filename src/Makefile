@@ -27,3 +27,6 @@ libs:
 
 clean:
 	rm -f iimms2 *.o
+	@for l in ${LIBDIRS}; do \
+		(cd $$l; make clean) \
+	done
