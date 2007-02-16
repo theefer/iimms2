@@ -22,10 +22,6 @@ using std::vector;
 using std::string;
 
 
-// FIXME: Configure that from outside the source code, please!
-#define DMENU_PATH "/home/seb/Build/dmenu.hg/dmenu"
-#define CLIENT_NAME "iimms2"
-
 #include "dictfeed.hpp"
 #include "xmms2commands.hpp"
 

@@ -7,8 +7,6 @@ SUBDIRS = src
 
 BIN = cmd/iimms2
 
-APP = iimms2
-
 all:
 	@echo iimms2 build options:
 	@echo "LIBS     = ${LIBS}"
@@ -21,17 +19,17 @@ all:
 	done
 
 dist: clean
-	mkdir -p ${APP}-${VERSION}
-	cp -R Makefile README COPYING config.mk ${SUBDIRS} ${APP}-${VERSION}
-	tar -cf ${APP}-${VERSION}.tar ${APP}-${VERSION}
-	gzip ${APP}-${VERSION}.tar
-	rm -rf ${APP}-${VERSION}
+	mkdir -p ${APP_NAME}-${VERSION}
+	cp -R Makefile README COPYING config.mk ${SUBDIRS} ${APP_NAME}-${VERSION}
+	tar -cf ${APP_NAME}-${VERSION}.tar ${APP_NAME}-${VERSION}
+	gzip ${APP_NAME}-${VERSION}.tar
+	rm -rf ${APP_NAME}-${VERSION}
 
 clean:
 	for i in ${SUBDIRS}; do \
 		(cd $$i; make clean); \
 	done
-	rm -rf ${APP}-${VERSION}*
+	rm -rf ${APP_NAME}-${VERSION}*
 
 install: all
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
