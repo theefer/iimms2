@@ -18,6 +18,8 @@
 
 #include "xmms2commands.hpp"
 
+#include "xmms2arguments.hpp"
+
 #include <list>
 #include <iostream>
 using std::cerr;
@@ -62,7 +64,7 @@ namespace iimms2
 
 		inter.add_command("jump", "Jump to another song in the playlist.")
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doJump, this, _1 ) )
-				<< argument<string>::make( "track" );
+				<< Xmms2PlaylistItemArgument::make( client );
 
 		inter.add_command("seek", "Seek in the current song.")
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doSeek, this, _1 ) )
@@ -70,7 +72,7 @@ namespace iimms2
 
 		inter.add_command("load", "Load another playlist.")
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doLoad, this, _1 ) )
-				<< argument<string>::make( "playlist" );
+				<< Xmms2PlaylistArgument::make( client );
 
 		inter.add_command("enqueue", "Enqueue songs in the active playlist.")
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doEnqueue, this, _1 ) )

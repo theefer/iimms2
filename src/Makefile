@@ -5,7 +5,7 @@ include ../config.mk
 
 LIBDIRS = cmd_parser mario
 
-SRC = iimms2.cpp dictfeed.cpp xmms2commands.cpp
+SRC = iimms2.cpp dictfeed.cpp xmms2commands.cpp xmms2arguments.cpp
 
 OBJ = ${SRC:.cpp=.o}
 

@@ -255,6 +255,7 @@ namespace Mario
 		Context newCtx( ctx.expand( input ) );
 		try {
 			cmds.run( newCtx.render() );
+			cout << "executed: " << newCtx.render() << endl;
 		}
 		catch( cmd_parser::command_not_found_error& e ) {
 			cout << "command not found: " << newCtx.render() << endl;
