@@ -106,7 +106,6 @@ namespace iimms2
 			// do nothing, no completion
 		}
 
-
 		return ptr;
 	}
 
@@ -125,23 +124,6 @@ namespace iimms2
 		}
 
 		return FeedPtr( feed );
-	}
-
-	FeedPtr
-	Xmms2Commands::makeOptionsFeed( const string& input ) const
-	{
-
-		// FIXME: build real feed
-/*
-		Xmms::Coll::Universe coll;
-		string key( "artist" );
-		list< string > lst;
-		lst.push_back( key );
-		List< Dict > res = client.collection.queryInfos( coll, lst, lst,
-														 0, 0, lst );
-		ptr.reset( new DictFeed( res, key ) );
-*/
-		return FeedPtr();
 	}
 
 	void
@@ -270,6 +252,7 @@ namespace iimms2
 	{
 		try {
 			client.playlist.load( playlist );
+			// FIXME: tickle *if* playlist changed
 		}
 		catch( Xmms::result_error& ) {
 			cerr << "could not load playlist: " << playlist << endl;
