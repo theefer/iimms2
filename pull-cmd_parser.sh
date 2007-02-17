@@ -13,7 +13,7 @@ then
     echo "done!"
 
     echo -n "Configuring nyello's sources... "
-    (cd ext/nyello.git/; ./configure) > /dev/null 2>&1
+    (cd ext/nyello.git/; ./autogen.sh && ./configure) > /dev/null 2>&1
     echo "done!"
 else
     echo -n "Updating nyello's sources... "
