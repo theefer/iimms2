@@ -96,13 +96,21 @@ namespace iimms2
 		FeedPtr ptr;
 
 		try {
-			list< string > alter;
-			inter.complete( input, alter );
-			if( alter.size() > 0 ) {
-				ptr = makeAlternativesFeed( alter );
+			if( input.size() == 0 ) {
+				cmd_parser::command_completion_visitor vis;
+				inter.accept( vis );
+				ptr = makeAlternativesFeed( vis.get_completions() );
+			}
+			else {
+				cmd_parser::argument_completion_visitor vis( input );
+				inter.accept( vis );
+				ptr = makeAlternativesFeed( vis.get_completions() );
 			}
 		}
 		catch( cmd_parser::incompatible_argument_error& e ) {
+			// do nothing, no completion
+		}
+		catch( cmd_parser::command_not_found_error& e ) {
 			// do nothing, no completion
 		}
 
@@ -112,14 +120,19 @@ namespace iimms2
 	FeedPtr
 	Xmms2Commands::makeAlternativesFeed( const list< string >& alternatives ) const
 	{
-		StringListFeed* feed( new StringListFeed );
-
 		string prev;
 		list< string >::const_iterator it;
-		for( it = alternatives.begin(); it != alternatives.end(); ++it ) {
-			if( (it->size() > 0) && (*it != prev) ) {
-				feed->push_back( *it );
-				prev = *it;
+
+		StringListFeed* feed( 0 );
+
+		// Only make a feed if there is at least one alternative
+		if( alternatives.size() > 0 ) {
+			feed = new StringListFeed;
+			for( it = alternatives.begin(); it != alternatives.end(); ++it ) {
+				if( (it->size() > 0) && (*it != prev) ) {
+					feed->push_back( *it );
+					prev = *it;
+				}
 			}
 		}
 
