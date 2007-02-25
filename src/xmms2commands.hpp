@@ -31,11 +31,18 @@ namespace iimms2
 
 	class Xmms2Commands : public Mario::Commands
 	{
+
+		enum BrowseAction
+		{
+			BROWSE_ENQUEUE,
+			BROWSE_INSERT
+		};
+
 	public:
 		Xmms2Commands( const std::string& client_name );
 		~Xmms2Commands();
 
-		Mario::FeedPtr choices( const std::string& input ) const;
+		Mario::FeedPtr choices( const Mario::Context& ctx ) const;
 
 		Mario::FeedPtr
 		makeAlternativesFeed( const std::list< std::string >& alternatives
@@ -54,6 +61,8 @@ namespace iimms2
 		void doLoad( std::string playlist ) const;
 		void doEnqueue( std::string match ) const;
 		void doInsert( std::string match ) const;
+		void doSearch( std::string match ) const;
+		void doBrowse( std::string match, BrowseAction action ) const;
 		void doStatus() const;
 
 	private:

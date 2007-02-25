@@ -93,4 +93,81 @@ namespace iimms2
 		}
 	}
 
+
+	Xmms2SearchArgument::Xmms2SearchArgument( const Xmms::Client& client_ )
+		: cmd_parser::tail_argument< std::string >( "playlist" ), client( client_ )
+	{
+	}
+
+	Xmms2SearchArgument::~Xmms2SearchArgument()
+	{
+	}
+
+	boost::shared_ptr< cmd_parser::argument< std::string > >
+	Xmms2SearchArgument::make( const Xmms::Client& client_ )
+	{
+		return boost::shared_ptr< cmd_parser::argument< std::string > >(
+		       new Xmms2SearchArgument( client_ ) );
+	}
+
+	void
+	Xmms2SearchArgument::complete( std::list< std::string >& alternatives ) const
+	{
+		// FIXME: What do we do here?
+	}
+
+
+	Xmms2BrowseArgument::Xmms2BrowseArgument( const Xmms::Client& client_ )
+		: cmd_parser::tail_argument< std::string >( "playlist" ), client( client_ )
+	{
+	}
+
+	Xmms2BrowseArgument::~Xmms2BrowseArgument()
+	{
+	}
+
+	boost::shared_ptr< cmd_parser::argument< std::string > >
+	Xmms2BrowseArgument::make( const Xmms::Client& client_ )
+	{
+		return boost::shared_ptr< cmd_parser::argument< std::string > >(
+		       new Xmms2BrowseArgument( client_ ) );
+	}
+
+	std::string
+	Xmms2BrowseArgument::extract( cmd_parser::tokeniter& start,
+	                              const cmd_parser::tokeniter& end ) const
+	{
+		cmd_parser::tokeniter pos( start );
+
+		// FIXME: only parse tokens ending with '/'
+		std::string val( cmd_parser::tail_argument< std::string >::extract( pos, end ) );
+
+		// Ending with a '/': incomplete path!
+		if( val[ val.size() - 1 ] == '/' ) {
+			throw cmd_parser::incompatible_argument_error( "incomplete path" );
+		}
+
+		// Default protocol if starting with / is file://
+		if( val[0] == '/' ) {
+			val.insert( 0, "file://" );
+		}
+
+		// There might be spaces after '/' in the context rendering, remove'em
+		std::string::size_type s;
+		while( (s = val.find( "/ " )) != std::string::npos ) {
+			val.erase( s + 1, 1 );
+		}
+
+		// Update token iterator
+		start = pos;
+		return val;
+	}
+
+	void
+	Xmms2BrowseArgument::complete( std::list< std::string >& alternatives ) const
+	{
+		// FIXME: What do we do here?
+		cmd_parser::tail_argument< std::string >::complete( alternatives );
+	}
+
 }

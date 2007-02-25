@@ -19,6 +19,7 @@
 #include "xmms2commands.hpp"
 
 #include "xmms2arguments.hpp"
+#include "xmms2argumentvisitor.hpp"
 
 #include <list>
 #include <iostream>
@@ -38,7 +39,7 @@ namespace iimms2
 		: client( client_name )
 	{
 		// FIXME: might fail, okay for status ; assert on connection when needed
-		client.connect();
+		client.connect( std::getenv( "XMMS_PATH" ) );
 
 		inter.add_command("play/pause", "Toggle play/pause the playback.")
 			.add_signature<void>( "", boost::bind( &Xmms2Commands::doTogglePlayPause, this ) );
@@ -62,7 +63,7 @@ namespace iimms2
 		inter.add_command("jump", "Jump to another song in the playlist.")
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doJump, this, _1 ) )
 				<< Xmms2PlaylistItemArgument::make( client );
-
+/*
 		inter.add_command("enqueue", "Enqueue songs in the active playlist.")
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doEnqueue, this, _1 ) )
 				<< argument<string>::make( "match" );
@@ -70,7 +71,20 @@ namespace iimms2
 		inter.add_command("insert", "Insert songs in the active playlist after the playing one.")
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doInsert, this, _1 ) )
 				<< argument<string>::make( "match" );
+*/
+		inter.add_command("search", "Search songs to add to the playlist.")
+			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doSearch, this, _1 ) )
+				<< Xmms2SearchArgument::make( client );
 
+		command& browseCmd( inter.add_command("browse", "Browse files to add to the playlist.") );
+		browseCmd.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doBrowse, this, _1, BROWSE_ENQUEUE ) )
+			<< Xmms2BrowseArgument::make( client );
+/*
+		browseCmd.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doBrowse, this, _1, BROWSE_ENQUEUE ) )
+			<< Xmms2BrowseArgument::make( client ) << kw_argument::make( "enqueue" );
+		browseCmd.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doBrowse, this, _1, BROWSE_INSERT ) )
+			<< Xmms2BrowseArgument::make( client ) << kw_argument::make( "insert next" );
+*/
 		inter.add_command("seek", "Seek in the current song.")
 			.add_signature<void, string>( "", boost::bind( &Xmms2Commands::doSeek, this, _1 ) )
 				<< argument<string>::make( "offset" );
@@ -91,18 +105,18 @@ namespace iimms2
 	}
 
 	FeedPtr
-	Xmms2Commands::choices( const string& input ) const
+	Xmms2Commands::choices( const Mario::Context& ctx ) const
 	{
 		FeedPtr ptr;
 
 		try {
-			if( input.size() == 0 ) {
+			if( ctx.empty() ) {
 				cmd_parser::command_completion_visitor vis;
 				inter.accept( vis );
 				ptr = makeAlternativesFeed( vis.get_completions() );
 			}
 			else {
-				cmd_parser::argument_completion_visitor vis( input );
+				Xmms2ArgumentVisitor vis( ctx, client );
 				inter.accept( vis );
 				ptr = makeAlternativesFeed( vis.get_completions() );
 			}
@@ -227,7 +241,7 @@ namespace iimms2
 			// target := POSITION
 			// target := POSITION "." ...
 			else {
-				client.playlist.setNext( pos );
+				client.playlist.setNext( pos - 1 );
 			}
 		}
 		// target := PATTERN
@@ -282,12 +296,58 @@ namespace iimms2
 	Xmms2Commands::doEnqueue( string match ) const
 	{
 		// FIXME: Code
+		// FIXME: When incomplete, should keep gathering arguments
 	}
 
 	void
 	Xmms2Commands::doInsert( string match ) const
 	{
 		// FIXME: Code
+	}
+
+	void
+	Xmms2Commands::doSearch( string match ) const
+	{
+		// FIXME: Code
+	}
+
+	/* Browse action called either with a path to a file or a
+	 * directory ending with a wildcard ("*") to match all files in
+	 * that directory.
+	 */
+	void
+	Xmms2Commands::doBrowse( string path, BrowseAction action ) const
+	{
+		if( path.size() == 0 ) {
+			return;
+		}
+
+		// Default protocol if starting with / is file://
+/*
+		if( path[0] == '/' ) {
+			path.insert( 0, "file://" );
+		}
+
+		// There might be spaces after '/' in the context rendering, remove'em
+		string::size_type pos;
+		while( (pos = path.find( "/ " )) != string::npos ) {
+			path.erase( pos + 1, 1 );
+		}
+*/
+		// Ending with a star, try to match the parent directory
+		bool addDir( false );
+		if( path[ path.size() - 1 ] == '*' ) {
+			path.erase( path.size() - 1 );
+			addDir = true;
+		}
+
+		// FIXME: insert vs enqueue!  hard to parse?
+		if( addDir ) {
+			client.playlist.addRecursive( path );
+		}
+		else {
+			client.playlist.addUrl( path );
+		}
 	}
 
 	void

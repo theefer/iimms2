@@ -34,6 +34,7 @@ namespace Mario
 	class Feed;
 	typedef boost::shared_ptr< Feed > FeedPtr;
 
+	class Context;
 
 	class Pipe
 	{
@@ -103,8 +104,8 @@ namespace Mario
 		Commands();
 		virtual ~Commands();
 
-		void run( const std::string& input ) const;
-		virtual FeedPtr choices( const std::string& input ) const = 0;
+		void run( const Context& ctx ) const;
+		virtual FeedPtr choices( const Context& ctx ) const = 0;
 
 	protected:
 		cmd_parser::interpreter inter;
@@ -120,6 +121,7 @@ namespace Mario
 
 		Context expand( const std::string& more ) const;
 		std::string render() const;
+		bool empty() const;
 
 	protected:
 		Context();

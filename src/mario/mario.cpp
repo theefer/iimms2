@@ -181,9 +181,9 @@ namespace Mario
 	}
 
 	void
-	Commands::run( const string& input ) const
+	Commands::run( const Context& ctx ) const
 	{
-		inter.run( input );
+		inter.run( ctx.render() );
 	}
 
 
@@ -204,7 +204,9 @@ namespace Mario
 	Context::expand( const string& more ) const
 	{
 		Context ctx( *this );
-		ctx.env.push_back( more );
+		if( more.size() > 0 ) {
+			ctx.env.push_back( more );
+		}
 		return ctx;
 	}
 
@@ -221,6 +223,12 @@ namespace Mario
 		}
 
 		return out;
+	}
+
+	bool
+	Context::empty() const
+	{
+		return env.empty();
 	}
 
 
@@ -254,7 +262,7 @@ namespace Mario
 	{
 		Context newCtx( ctx.expand( input ) );
 		try {
-			cmds.run( newCtx.render() );
+			cmds.run( newCtx );
 			cout << "executed: " << newCtx.render() << endl;
 		}
 		catch( cmd_parser::command_not_found_error& e ) {
@@ -274,7 +282,7 @@ namespace Mario
 	Completer::acquire( const Context& ctx ) const
 	{
 		string token;
-		FeedPtr choiceFeed( cmds.choices( ctx.render() ) );
+		FeedPtr choiceFeed( cmds.choices( ctx ) );
 		if( choiceFeed ) {
 			token = pipe.pump( *choiceFeed );
 			complete( ctx, token );

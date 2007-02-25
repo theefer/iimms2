@@ -28,6 +28,11 @@
 
 #include "cmd_parser/cmd_parser.h"
 
+// DEBUG
+#include <iostream>
+using std::cout;
+using std::endl;
+
 namespace iimms2
 {
 
@@ -35,7 +40,7 @@ namespace iimms2
 	{
 	public:
 		Xmms2PlaylistArgument( const Xmms::Client& client_ );
-		~Xmms2PlaylistArgument();
+		virtual ~Xmms2PlaylistArgument();
 
 		static boost::shared_ptr< cmd_parser::argument< std::string > >
 		make( const Xmms::Client& client_ );
@@ -51,12 +56,53 @@ namespace iimms2
 	{
 	public:
 		Xmms2PlaylistItemArgument( const Xmms::Client& client_ );
-		~Xmms2PlaylistItemArgument();
+		virtual ~Xmms2PlaylistItemArgument();
 
 		static boost::shared_ptr< cmd_parser::argument< std::string > >
 		make( const Xmms::Client& client_ );
 
 		void complete( std::list< std::string >& alternatives ) const;
+
+	protected:
+		const Xmms::Client& client;
+
+	};
+
+	class Xmms2SearchArgument : public cmd_parser::tail_argument< std::string >
+	{
+	public:
+		Xmms2SearchArgument( const Xmms::Client& client_ );
+		virtual ~Xmms2SearchArgument();
+
+		static boost::shared_ptr< cmd_parser::argument< std::string > >
+		make( const Xmms::Client& client_ );
+
+		void complete( std::list< std::string >& alternatives ) const;
+
+	protected:
+		const Xmms::Client& client;
+
+	};
+
+	class Xmms2BrowseArgument : public cmd_parser::tail_argument< std::string >
+	{
+	public:
+		Xmms2BrowseArgument( const Xmms::Client& client_ );
+		virtual ~Xmms2BrowseArgument();
+
+		static boost::shared_ptr< cmd_parser::argument< std::string > >
+		make( const Xmms::Client& client_ );
+
+		std::string extract( cmd_parser::tokeniter& start,
+		                     const cmd_parser::tokeniter& end ) const;
+
+		void complete( std::list< std::string >& alternatives ) const;
+
+		void accept( cmd_parser::visitor& v ) const
+		{
+			cout << "accept in x2 browse agent" << endl;
+			v.visit( *this );
+		}
 
 	protected:
 		const Xmms::Client& client;
